@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório</title>
+    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="shortcut icon" href="assets/icon.png" type="image/x-icon">
+</head>
+
+<body onload="loadRelatorio()">
+    <header>
+        <nav class="links">
+            <a href="./index.html" title="Ir para a home">Início</a>
+            <a href="./lançamentos.html" title="Ir para a home">Lançamentos</a>
+            <a href="./cliente-fornecedor.html" title="Ir para a clientes e fornecedores">Cliente / Fornecedores</a>
+            <a href="./config.html" title="Ir para a movimentação">Configurações</a>
+            <a href="./sobre.html" title="Ir o sobre">Sobre</a>
+
+        </nav>
+    </header>
+    <div class="loader"></div>
+
+    <article class="container desactive">
+        <h1 id="enterprise-name">Relatório</h1>
+
+        <h5>Lançamentos</h5>
+        <div class="flex-row"></div>
+
+        <h5>Saldo</h5>
+        <div class="flex-row"></div>
+
+        <h5>Resultado</h5>
+        <div class="flex-row"></div>
+
+        <details>
+            <summary>Por lançamento</summary>
+            <div id="moviments-content"></div>
+        </details>
+        <details>
+            <summary>Por Cliente / fornecedor</summary>
+            <div id="who-content"></div>
+        </details>
+
+        <details>
+            <summary>Por categoria</summary>
+            <div id="category-content"></div>
+        </details>
+
+    </article>
+    <script src="assets/script.js"></script>
+</body>
+
+</html>

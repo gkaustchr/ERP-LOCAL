@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações</title>
+    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="shortcut icon" href="assets/icon.png" type="image/x-icon">
+</head>
+
+<body onload="populateFormConfig();">
+    <header>
+        <nav class="links">
+            <a href="./index.html" title="Ir para a home">Início</a>
+            <a href="./lançamentos.html" title="Ir para a home">Lançamentos</a>
+            <a href="./cliente-fornecedor.html" title="Ir para a clientes e fornecedores">Cliente / Fornecedores</a>
+            <a href="./config.html" class="active" title="Ir para a movimentação">Configurações</a>
+            <a href="./sobre.html" title="Ir o sobre">Sobre</a>
+        </nav>
+    </header>
+    <article class="container">
+        <h1>Configurações</h1>
+        <form id="configForm" onsubmit="registerConfig(event)">
+            <!-- Formulário para inserir dados -->
+            <label for="textfield-name">Nome da Empresa / Pessoa Física</label>
+            <input type="text" id="textfield-name" placeholder="Digite seu nome" required />
+            <label for="type">Tipo</label>
+            <select required id="select-type">
+                <option value="">Selecione o tipo</option>
+                <option value="CPF">Pessoa Física</option>
+                <option value="MEI">MEI</option>
+                <option value="ME">ME</option>
+            </select>
+            <label for="textfield-color">Cor Principal</label>
+            <input type="color" id="textfield-color" placeholder="Digite seu nome" required />
+
+            <button type="submit">Salvar</button>
+            <button onclick="selectFile()">Importar Dados</button>
+        </form>
+    </article>
+    <script src="assets/script.js"></script>
+</body>
+
+</html>

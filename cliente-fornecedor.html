@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pessoas</title>
+    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="shortcut icon" href="assets/icon.png" type="image/x-icon">
+</head>
+
+<body onload="updateListClients();">
+    <header>
+        <nav class="links">
+            <a href="./index.html" title="Ir para a home">Início</a>
+            <a href="./lançamentos.html"  title="Ir para a home">Lançamentos</a>
+            <a href="./cliente-fornecedor.html" class="active" title="Ir para a clientes e fornecedores">Cliente / Fornecedores</a>
+            <a href="./config.html"  title="Ir para a movimentação">Configurações</a>
+            <a href="./sobre.html" title="Ir o sobre">Sobre</a>
+        </nav>
+    </header>
+    <div class="loader"></div>
+
+    <article class="container desactive">
+
+        <h1>Cliente / Fornecedor</h1>
+        <form id="clientForm" onsubmit="registerClient(event)">
+            <!-- Formulário para inserir dados -->
+            <label for="textfield-name">Nome da Empresa / Pessoa Física</label>
+            <input type="text" id="textfield-name" placeholder="Digite o nome" required />
+
+            <label for="textfield-description">Descrição</label>
+            <input type="text" id="textfield-description" placeholder="Sócio, Fornecedor de tecidos, Contrato até ago/2025 Banco tal, etc...." />
+
+            <button type="submit">Inserir / Atualizar</button>
+            <button type="reset" onclick="clearSearchClient()">Limpar</button>
+            <button type="button" onclick="deleteClient()">Deletar</button>
+        </form>
+
+        <hr />
+        <details>
+            <summary>Histórico</summary>
+            <div id="list-content"></div>
+        </details>
+
+    </article>
+    <script src="assets/script.js"></script>
+</body>
+
+</html>
