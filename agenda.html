@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda</title>
+    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="shortcut icon" href="assets/icon.png" type="image/x-icon">
+</head>
+
+<body onload="populateAgendaForm();">
+    <header>
+        <nav class="links">
+            <a href="./index.html" title="Ir para a home">Início</a>
+            <a href="./lançamentos.html" title="Ir para a home">Lançamentos</a>
+            <a href="./cliente-fornecedor.html" title="Ir para a clientes e fornecedores">Cliente / Fornecedores</a>
+            <a href="./agenda.html" class="active" title="Ir para a agenda">Agenda</a>
+            <a href="./config.html" title="Ir para a movimentação">Configurações</a>
+            <a href="./sobre.html" title="Ir o sobre">Sobre</a>
+        </nav>
+    </header>
+    <div class="loader"></div>
+
+    <article class="container desactive">
+
+        <h1>Agenda</h1>
+
+        <form id="agendaForm" onsubmit="registerAgenda(event)">
+            <!-- Formulário para inserir dados -->
+            <label for="textfield-date">Data hora</label>
+            <input type="datetime-local" id="textfield-date" placeholder="date" required />
+
+            <label for="who">Client / Fornecedor</label>
+            <select required id="select-who">
+                <option value="">Selecione</option>
+            </select>
+
+            <label for="textfield-obs">Observação</label>
+            <input type="text" id="textfield-obs"
+                placeholder="Descrição ..." />
+
+            <button type="submit">Agendar / Atualizar</button>
+            <button type="reset" onclick="clearSearchAgenda()">Limpar</button>
+            <button type="button" onclick="deleteAgenda()">Deletar</button>
+        </form>
+
+        <hr />
+        <details>
+            <summary>Agendado</summary>
+            <div id="agenda-content"></div>
+        </details>
+        <details>
+            <summary>Realizads</summary>
+            <div id="ready-content"></div>
+        </details>
+    </article>
+    <script src="assets/script.js"></script>
+
+</body>
+
+</html>
