@@ -1,195 +1,50 @@
-let EXTRACT = []
-let CONFIG = {}
-const NUMBASE = 10001
-let itemToUpdate = {}
-let itemToUpdateClient = {}
+const NUMBASE = 10001;
+let AGENDA = [];
+let CONFIG = {};
+let itemToUpdate = {};
+let itemToUpdateClient = {};
+let itemToUpdateAgenda = {};
 
+let CLIENTS = [{ id: 0, name: 'Desconhecido', description: 'Sem cliente / fornecedor especifico' }];
 const TYPE_MOVIMENTS = [
-    {
-        id: 0,
-        name: 'Capital social integralizado',
-        description: 'Aporte recebido pelos sócios para o início das atividades da empresa.',
-        classe: 'PL',
-        category: 'Patrimônio Líquido',
-        type: true
-    },
-    {
-        id: 1,
-        name: 'Venda de produto(s)',
-        description: 'Recebimento de dinheiro proveniente da venda de produtos físicos ou digitais.',
-        classe: 'Receita',
-        category: 'Ativo',
-        type: true
-    },
-    {
-        id: 2,
-        name: 'Prestação de serviço(s)',
-        description: 'Recebimento de dinheiro pela prestação de serviços.',
-        classe: 'Receita',
-        category: 'Ativo',
-        type: true
-    },
-    {
-        id: 3,
-        name: 'Aporte',
-        description: 'Inserção de capital próprio ou de terceiros na empresa.',
-        classe: 'PL',
-        category: 'Patrimônio Líquido',
-        type: true
-    },
-    {
-        id: 4,
-        name: 'Pró-labore',
-        description: 'Remuneração paga aos sócios da empresa.',
-        classe: 'Custo',
-        category: 'Despesa',
-        type: false
-    },
-    {
-        id: 5,
-        name: 'Salário(s)',
-        description: 'Pagamentos feitos aos funcionários da empresa.',
-        classe: 'Custo',
-        category: 'Despesa',
-        type: false
-    },
-    {
-        id: 6,
-        name: 'Imobilizado',
-        description: 'Compra de bens duráveis, como máquinas, equipamentos, e imóveis.',
-        classe: 'Ativo',
-        category: 'Ativo Não Circulante',
-        type: false
-    },
-    {
-        id: 7,
-        name: 'Compra de material para uso',
-        description: 'Compra de materiais de consumo para operação diária, como papelaria ou limpeza.',
-        classe: 'Despesa',
-        category: 'Despesa Operacional',
-        type: false
-    },
-    {
-        id: 8,
-        name: 'Transporte (Uber/99/ônibus/etc)',
-        description: 'Despesas com transporte de funcionários ou para fins operacionais.',
-        classe: 'Despesa',
-        category: 'Despesa Operacional',
-        type: false
-    },
-    {
-        id: 9,
-        name: 'Alimentação',
-        description: 'Despesas com refeições para colaboradores ou em eventos corporativos.',
-        classe: 'Despesa',
-        category: 'Despesa Operacional',
-        type: false
-    },
-    {
-        id: 10,
-        name: 'Rendimento Renda Fixa (rendimento diário)',
-        description: 'Recebimento de juros ou rendimentos de aplicações financeiras em renda fixa.',
-        classe: 'Caixa',
-        category: 'Receita Financeira',
-        type: true
-    },
-    {
-        id: 11,
-        name: 'Rendimento derivados de investimentos',
-        description: 'Recebimento de rendimentos oriundos de investimentos em ações, fundos ou outras aplicações.',
-        classe: 'Investimento',
-        category: 'Ativo',
-        type: true
-    },
-    {
-        id: 12,
-        name: 'Impostos e Taxas',
-        description: 'Pagamento de tributos municipais, estaduais ou federais, e taxas bancárias.',
-        classe: 'Custo',
-        category: 'Passivo',
-        type: false
-    },
-    {
-        id: 13,
-        name: 'Manutenção de Equipamentos',
-        description: 'Despesas com reparos e manutenção de máquinas e equipamentos.',
-        classe: 'Despesa',
-        category: 'Despesa Operacional',
-        type: false
-    },
-    {
-        id: 14,
-        name: 'Aluguel',
-        description: 'Despesas com o aluguel de imóveis utilizados pela empresa.',
-        classe: 'Despesa',
-        category: 'Despesa Operacional',
-        type: false
-    },
-    {
-        id: 15,
-        name: 'Contas de Energia Elétrica e Água',
-        description: 'Pagamentos de contas de serviços públicos utilizados na empresa.',
-        classe: 'Despesa',
-        category: 'Despesa Operacional',
-        type: false
-    },
-    {
-        id: 16,
-        name: 'Vendas com Cartão de Crédito/Débito',
-        description: 'Recebimento de vendas realizadas através de cartões de crédito ou débito.',
-        classe: 'Receita',
-        category: 'Ativo',
-        type: true
-    },
-    {
-        id: 17,
-        name: 'Distribuição de Lucros',
-        description: 'Distribuição de lucros aos sócios ou acionistas.',
-        classe: 'PL',
-        category: 'Patrimônio Líquido',
-        type: false
-    },
-    {
-        id: 18,
-        name: 'Dívidas Bancárias',
-        description: 'Pagamentos relacionados a empréstimos ou financiamentos bancários.',
-        classe: 'Passivo',
-        category: 'Passivo Não Circulante',
-        type: false
-    },
-    {
-        id: 19,
-        name: 'Marketing e Publicidade',
-        description: 'Despesas com campanhas de marketing e publicidade.',
-        classe: 'Despesa',
-        category: 'Despesa Operacional',
-        type: false
-    },
-    {
-        id: 20,
-        name: 'Seguro Empresarial',
-        description: 'Pagamento de seguros para proteção de bens da empresa.',
-        classe: 'Despesa',
-        category: 'Despesa Operacional',
-        type: false
-    },
-    {
-        id: 21,
-        name: 'Pagamento do Cartão de crédito',
-        description: 'Pagamento do cartão de crédito da empresa.',
-        classe: 'Despesa',
-        category: 'Despesa Operacional',
-        type: false
-    },
+    { id: 0, name: 'Capital social integralizado', description: 'Aporte recebido pelos sócios para o início das atividades da empresa.', classe: 'PL', category: 'Patrimônio Líquido', type: true },
+    { id: 1, name: 'Venda de produto(s)', description: 'Recebimento de dinheiro proveniente da venda de produtos físicos ou digitais.', classe: 'Receita', category: 'Ativo', type: true },
+    { id: 2, name: 'Prestação de serviço(s)', description: 'Recebimento de dinheiro pela prestação de serviços.', classe: 'Receita', category: 'Ativo', type: true },
+    { id: 3, name: 'Aporte', description: 'Inserção de capital próprio ou de terceiros na empresa.', classe: 'PL', category: 'Patrimônio Líquido', type: true },
+    { id: 4, name: 'Pró-labore', description: 'Remuneração paga aos sócios da empresa.', classe: 'Custo', category: 'Despesa', type: false },
+    { id: 5, name: 'Salário(s)', description: 'Pagamentos feitos aos funcionários da empresa.', classe: 'Custo', category: 'Despesa', type: false },
+    { id: 6, name: 'Imobilizado', description: 'Compra de bens duráveis, como máquinas, equipamentos, e imóveis.', classe: 'Ativo', category: 'Ativo Não Circulante', type: false },
+    { id: 7, name: 'Compra de material para uso', description: 'Compra de materiais de consumo para operação diária, como papelaria ou limpeza.', classe: 'Despesa', category: 'Despesa Operacional', type: false },
+    { id: 8, name: 'Transporte (Uber/99/ônibus/etc)', description: 'Despesas com transporte de funcionários ou para fins operacionais.', classe: 'Despesa', category: 'Despesa Operacional', type: false },
+    { id: 9, name: 'Alimentação', description: 'Despesas com refeições para colaboradores ou em eventos corporativos.', classe: 'Despesa', category: 'Despesa Operacional', type: false },
+    { id: 10, name: 'Rendimento Renda Fixa (rendimento diário)', description: 'Recebimento de juros ou rendimentos de aplicações financeiras em renda fixa.', classe: 'Caixa', category: 'Receita Financeira', type: true },
+    { id: 11, name: 'Rendimento derivados de investimentos', description: 'Recebimento de rendimentos oriundos de investimentos em ações, fundos ou outras aplicações.', classe: 'Investimento', category: 'Ativo', type: true },
+    { id: 12, name: 'Impostos e Taxas', description: 'Pagamento de tributos municipais, estaduais ou federais, e taxas bancárias.', classe: 'Custo', category: 'Passivo', type: false },
+    { id: 13, name: 'Manutenção de Equipamentos', description: 'Despesas com reparos e manutenção de máquinas e equipamentos.', classe: 'Despesa', category: 'Despesa Operacional', type: false },
+    { id: 14, name: 'Aluguel', description: 'Despesas com o aluguel de imóveis utilizados pela empresa.', classe: 'Despesa', category: 'Despesa Operacional', type: false },
+    { id: 15, name: 'Contas de Energia Elétrica e Água', description: 'Pagamentos de contas de serviços públicos utilizados na empresa.', classe: 'Despesa', category: 'Despesa Operacional', type: false },
+    { id: 16, name: 'Vendas com Cartão de Crédito/Débito', description: 'Recebimento de vendas realizadas através de cartões de crédito ou débito.', classe: 'Receita', category: 'Ativo', type: true },
+    { id: 17, name: 'Distribuição de Lucros', description: 'Distribuição de lucros aos sócios ou acionistas.', classe: 'PL', category: 'Patrimônio Líquido', type: false },
+    { id: 18, name: 'Dívidas Bancárias', description: 'Pagamentos relacionados a empréstimos ou financiamentos bancários.', classe: 'Passivo', category: 'Passivo Não Circulante', type: false },
+    { id: 19, name: 'Marketing e Publicidade', description: 'Despesas com campanhas de marketing e publicidade.', classe: 'Despesa', category: 'Despesa Operacional', type: false },
+    { id: 20, name: 'Seguro Empresarial', description: 'Pagamento de seguros para proteção de bens da empresa.', classe: 'Despesa', category: 'Despesa Operacional', type: false },
+    { id: 21, name: 'Pagamento do Cartão de crédito', description: 'Pagamento do cartão de crédito da empresa.', classe: 'Despesa', category: 'Despesa Operacional', type: false },
 ];
 
-let CLIENTS = [
-    {
-        id: 0,
-        name: 'Desconhecido',
-        description: 'Sem cliente / fornecedor especifico'
+function updateElement(id, text) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.tagName === 'SELECT' || element.tagName === 'COLOR' ? element.value = text : element.innerText = text;
+    } else {
+        console.error(`Elemento com id "${id}" não encontrado.`);
     }
-]
+}
+
+function focusElement(id) {
+    const element = document.getElementById(id);
+    element && element.focus();
+}
+
 
 function updateTextField(id, text) {
     try {
@@ -208,49 +63,37 @@ function updateTextField(id, text) {
     }
 }
 
-function fieldOnFocus(id) {
-    try {
-        const element = document.getElementById(id);
-        if (element)
-            element.focus()
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-function loadData() {
+function loadFromLocalStorage() {
     try {
         EXTRACT = JSON.parse(localStorage.getItem('moviments')) || [];
-        const config = JSON.parse(localStorage.getItem('config'));
-        const clients = JSON.parse(localStorage.getItem('clients'));
-        if (clients?.length > 0)
-            CLIENTS = clients
+        CLIENTS = JSON.parse(localStorage.getItem('clients')) || CLIENTS;
+        CONFIG = JSON.parse(localStorage.getItem('config')) || {};
+        AGENDA = JSON.parse(localStorage.getItem('agenda')) || [];
 
-        if (!config || !config.name) {
+        if (!CONFIG || !CONFIG.name) {
             if (!window.location.pathname.includes('config.html'))
                 window.location.href = './config.html'; // Redireciona para configurar os dados
             else
                 populateFormConfig()
         } else {
-            updateRootProperty('--primary-color', config?.color)
-            updateRootProperty('--bg-color-opacity', `${config?.color}20`)
+            updateRootProperty('--primary-color', CONFIG?.color)
+            updateRootProperty('--bg-color-opacity', `${CONFIG?.color}20`)
             isLoaded = true
-            document.querySelector('.loader').style.display = "none"
-            document.querySelector('.desactive')?.classList?.remove('desactive')
-            document.title = `${config?.name} - ${document?.title}`;
+            document.title = `${CONFIG?.name} - ${document?.title}`;
             if (window.location.pathname.includes('config.html'))
                 populateFormConfig()
             else {
+                document.querySelector('.desactive')?.classList?.remove('desactive')
+                document.querySelector('.loader').style.display = "none"
                 if (window.location.pathname.includes('index.html')) {
-                    updateTextField("enterprise-name", config?.name)
+                    updateTextField("enterprise-name", CONFIG?.name)
                     updatedashHome()
 
                 }
-                CONFIG = config
             }
         }
     } catch (error) {
-        console.error('Erro:', error);
+        console.error('Erro ao carregar dados do localStorage:', error);
     }
 }
 
@@ -302,106 +145,78 @@ function updatedashHome() {
     }
 }
 
-function setLocalStorage(name, value) {
-    localStorage.setItem(name, JSON.stringify(value))
+function createProgressBar(color, width, percentage) {
+    const bar = document.createElement('div');
+    bar.classList.add(width > 0 ? 'positivo' : 'negativo');
+    bar.style.display = 'inline-block';
+    bar.style.backgroundColor = color;
+    bar.style.height = '20px';
+    bar.style.width = `${width}%`;
+    bar.innerHTML = `<span>${percentage}% </span>`;
+    return bar;
 }
 
-function getLocalStorage(name) {
-    return JSON.parse(localStorage.getItem(name))
+function saveToLocalStorage(name, value) {
+    localStorage.setItem(name, JSON.stringify(value));
+}
+
+function getFromLocalStorage(name) {
+    return JSON.parse(localStorage.getItem(name));
 }
 
 function updateRootProperty(name, value) {
     document.documentElement.style.setProperty(name, value);
 }
 
-// Função para criar e baixar um arquivo JSON com três arrays
 function createAndDownloadJSON() {
-    try {
-
-        // Estrutura JSON com os arrays
-        const jsonData = {
-            moviments: EXTRACT,
-            who: CLIENTS,
-            config: CONFIG
-        };
-
-        // Converter para string JSON formatada
-        const jsonString = JSON.stringify(jsonData, null, 4);
-
-        // Criar um blob a partir do conteúdo JSON
-        const blob = new Blob([jsonString], { type: "application/json" });
-
-        // Criar um link para download
-        const downloadLink = document.createElement("a");
-        downloadLink.href = URL.createObjectURL(blob);
-        downloadLink.download = "gerenciador.json"; // Nome do arquivo para download
-
-        // Adicionar o link ao documento e simular o clique para baixar
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-
-        // Remover o link após o download
-        document.body.removeChild(downloadLink);
-    } catch (error) {
-        console.error("Erro ao criar o arquivo JSON:", error);
-    }
+    const jsonData = { moviments: EXTRACT, who: CLIENTS, config: CONFIG, agenda: AGENDA };
+    const jsonString = JSON.stringify(jsonData, null, 4);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = "gerenciador.json";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
 }
 
-// Função para abrir o seletor de arquivo ao clicar no botão
 function selectFile() {
-    try {
-        if(!confirm('Deseja realmente substituir os dados'))
-            return
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json';
-        input.onchange = readJSONAndStoreInLocalStorage; // Chama a função de leitura quando o arquivo for selecionado
-        input.click(); // Simula o clique no input de arquivo
-        
-    } catch (error) {
-        console.log(error)
-    }
+    if (!confirm('Deseja realmente substituir os dados')) return;
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = readJSONAndStoreInLocalStorage;
+    input.click();
 }
 
-// Função para ler o arquivo JSON e inserir cada array no localStorage
 function readJSONAndStoreInLocalStorage(event) {
-    const file = event.target.files[0]; // Obtém o arquivo selecionado
+    const file = event.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader(); // Cria um leitor de arquivo
-    reader.onload = function (e) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
         try {
-            // Faz a leitura e converte o conteúdo do arquivo para objeto JSON
             const jsonData = JSON.parse(e.target.result);
-
-            // Insere cada array no localStorage com chaves específicas
             localStorage.setItem('moviments', JSON.stringify(jsonData.moviments));
             localStorage.setItem('clients', JSON.stringify(jsonData.who));
             localStorage.setItem('config', JSON.stringify(jsonData.config));
-
+            localStorage.setItem('agenda', JSON.stringify(jsonData.agenda));
             alert("Dados atualizados com sucesso!");
-            location.reload()
+            location.reload();
         } catch (error) {
             console.error("Erro ao ler o arquivo JSON:", error);
             alert("Erro ao processar o arquivo JSON.");
         }
     };
-
-    reader.readAsText(file); // Lê o arquivo como texto
+    reader.readAsText(file);
 }
 
-// Função para formatar um número como moeda brasileira
 function formatCurrency(value) {
-    return new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-    }).format(value);
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 }
-
-// Relatório
 
 function goToPageRelatorio() {
-    location.href = './relatorio.html'
+    location.href = './relatorio.html';
 }
 
 function loadRelatorio() {
@@ -544,420 +359,419 @@ function loadRelatorio() {
     }
 }
 
-// 1. Contar quantos registros são de saída de dinheiro (type: false)
 function countOutflows() {
-    return EXTRACT.filter(item => item.type === false).length;
+    return EXTRACT.filter(item => !item.type).length;
 }
 
-// 2. Contar quantos registros são de entrada de dinheiro (type: true)
 function countInflows() {
-    return EXTRACT.filter(item => item.type === true).length;
+    return EXTRACT.filter(item => item.type).length;
 }
 
-// 3. Calcular o saldo total de entradas
 function totalInflows() {
-    return EXTRACT.filter(item => item.type === true).reduce((sum, item) => sum + item.value, 0);
+    return EXTRACT.filter(item => item.type).reduce((sum, item) => sum + item.value, 0);
 }
 
-// 4. Calcular o saldo total de saídas
 function totalOutflows() {
-    return EXTRACT.filter(item => item.type === false).reduce((sum, item) => sum + item.value, 0);
+    return EXTRACT.filter(item => !item.type).reduce((sum, item) => sum + item.value, 0);
 }
 
-// 5. Calcular o saldo total (entradas - saídas)
 function totalBalance() {
     return totalInflows() - totalOutflows();
 }
 
-// Função para calcular a quantidade e o saldo por 'who'
 function balanceByWho() {
-    // Reduz o array EXTRACT em um objeto com a soma e a contagem para cada 'who'
     const result = EXTRACT.reduce((acc, item) => {
-        if (!acc[item.who]) {
-            acc[item.who] = { count: 0, total: 0 };
-        }
-        acc[item.who].count++;
-        acc[item.who].total += item.type ? item.value : -item.value; // Adiciona ou subtrai valor dependendo do tipo
+        const whoId = item.who;
+        acc[whoId] = acc[whoId] || { count: 0, total: 0 };
+        acc[whoId].count++;
+        acc[whoId].total += item.type ? item.value : -item.value;
         return acc;
     }, {});
 
-    // Converte o resultado em um array, filtra os que têm total diferente de zero e ordena do maior para o menor saldo
-    const filteredAndSorted = Object.entries(result)
-        .filter(([_, data]) => data.total !== 0) // Filtra 'who' com saldo diferente de zero
-        .sort((a, b) => Math.abs(b.total) - Math.abs(a.total)) // Ordena do maior para o menor saldo
-        .map(([who, data]) => {
-            // Busca o nome do cliente com base no 'who'
-            const client = CLIENTS.find(client => client.id === parseInt(who));
-
-            return {
-                who: parseInt(who),
-                name: client ? client.name : 'Cliente não encontrado', // Adiciona o nome do cliente
-                count: data.count,
-                total: data.total.toFixed(2)
-            };
-        });
-    return filteredAndSorted;
+    return Object.entries(result)
+        .filter(([_, data]) => data.total !== 0)
+        .sort((a, b) => Math.abs(b[1].total) - Math.abs(a[1].total))
+        .map(([who, data]) => ({
+            who: parseInt(who),
+            name: CLIENTS.find(client => client.id === parseInt(who))?.name || 'Cliente não encontrado',
+            count: data.count,
+            total: data.total.toFixed(2)
+        }));
 }
 
 function balanceByCategory() {
-    // Mapeia os ids de movimentação para suas respectivas categorias
     const categoryMap = TYPE_MOVIMENTS.reduce((acc, moviment) => {
         acc[moviment.id] = moviment.category;
         return acc;
     }, {});
 
-    // Reduz o array EXTRACT agrupando os valores por categoria
     const result = EXTRACT.reduce((acc, item) => {
-        const category = categoryMap[item.moviment] || 'Outros'; // Verifica a categoria associada ao movimento
-
-        if (!acc[category]) {
-            acc[category] = { count: 0, total: 0 };
-        }
-
-        acc[category].count++; // Incrementa o contador de transações
-        acc[category].total += Math.abs(item.value); // Soma o valor absoluto para evitar sinal negativo
+        const category = categoryMap[item.moviment] || 'Outros';
+        acc[category] = acc[category] || { count: 0, total: 0 };
+        acc[category].count++;
+        acc[category].total += Math.abs(item.value);
         return acc;
     }, {});
 
-    // Converte o objeto result em um array, ordena pelo total do maior para o menor e retorna
-    const filteredAndSorted = Object.entries(result)
-        .sort(([, a], [, b]) => b.total - a.total) // Ordena pelo total do maior para o menor
-        .map(([category, data]) => ({
-            category: category,
-            count: data.count,
-            total: data.total.toFixed(2)
-        }));
-
-    return filteredAndSorted;
+    return Object.entries(result)
+        .sort(([, a], [, b]) => b.total - a.total)
+        .map(([category, data]) => ({ category, count: data.count, total: data.total.toFixed(2) }));
 }
 
-// Função para cruzar os dados de EXTRACT com TYPE_MOVIMENTS
 function generateReport() {
-    const report = TYPE_MOVIMENTS.map(moviment => {
-        // Filtrar as transações correspondentes ao ID de movimentação
-        const transactions = EXTRACT.filter(item => item.moviment === moviment.id);
+    return TYPE_MOVIMENTS
+        .map(moviment => {
+            const transactions = EXTRACT.filter(item => item.moviment === moviment.id);
+            const totalInflow = transactions.filter(item => item.type).reduce((sum, item) => sum + item.value, 0);
+            const totalOutflow = transactions.filter(item => !item.type).reduce((sum, item) => sum + item.value, 0);
+            const balance = totalInflow - totalOutflow;
 
-        // Calcular o total de entradas e saídas
-        const totalInflow = transactions.filter(item => item.type === true).reduce((sum, item) => sum + item.value, 0);
-        const totalOutflow = transactions.filter(item => item.type === false).reduce((sum, item) => sum + item.value, 0);
-        const balance = totalInflow - totalOutflow;
-
-        // Retornar o relatório detalhado apenas se a movimentação tiver saldo ou valor movimentado
-        if (balance !== 0 || totalInflow !== 0 || totalOutflow !== 0) {
-            return {
+            return balance !== 0 || totalInflow !== 0 || totalOutflow !== 0 ? {
                 movimentId: moviment.id,
                 name: moviment.name,
                 description: moviment.description,
                 classe: moviment.classe,
                 category: moviment.category,
-                totalInflow: totalInflow,
-                totalOutflow: totalOutflow,
-                balance: balance,
+                totalInflow,
+                totalOutflow,
+                balance,
                 count: transactions.length
-            };
-        } else {
-            return null; // Ignorar movimentações com saldo zerado
-        }
-    })
-        .filter(item => item !== null) // Remove itens nulos
-        .sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance)); // Ordena do maior para o menor saldo
-
-    return report;
+            } : null;
+        })
+        .filter(item => item)
+        .sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance));
 }
 
-// CONFIGS
 function registerConfig(event) {
-    try {
-        event.preventDefault(); // Previne o comportamento padrão de envio do formulário
-
-        const form = event.target; // Acessa o formulário que disparou o evento
-
-        // Exemplo de como acessar diretamente o valor de um campo específico
-        const name = form.querySelector("#textfield-name").value;
-        const type = form.querySelector("#select-type").value;
-        const color = form.querySelector("#textfield-color").value;
-
-        const config = { name, type, color }
-
-        CONFIG = config
-
-        updateRootProperty('--primary-color', color)
-        updateRootProperty('--bg-color-opacity', `${color}20`)
-        setLocalStorage('config', config)
-    } catch (error) {
-        console.error(error); // Caso ocorra um erro, exibe no console
-    }
+    event.preventDefault();
+    const form = event.target;
+    const name = form.querySelector("#textfield-name").value;
+    const type = form.querySelector("#select-type").value;
+    const color = form.querySelector("#textfield-color").value;
+    CONFIG = { name, type, color };
+    updateRootProperty('--primary-color', color);
+    updateRootProperty('--bg-color-opacity', `${color}20`);
+    saveToLocalStorage('config', CONFIG);
 }
 
 function populateFormConfig() {
-    fieldOnFocus('textfield-name')
-    const config = getLocalStorage('config')
-    updateTextField("textfield-name", config?.name)
-    updateTextField("select-type", config?.type)
-    updateTextField("textfield-color", config?.color)
+    focusElement('textfield-name');
+    const config = getFromLocalStorage('config');
+    updateElement("textfield-name", config?.name);
+    updateElement("select-type", config?.type);
+    updateElement("textfield-color", config?.color);
 }
 
-// MOVIMENTS 
 function registerMoviment(event) {
-    try {
-        event.preventDefault(); // Previne o comportamento padrão de envio do formulário
-        const form = event.target; // Acessa o formulário que disparou o evento
+    event.preventDefault();
+    const form = event.target;
+    const moviment = Number(form.querySelector("#select-typel").value);
+    const who = Number(form.querySelector("#select-who").value);
+    const date = new Date(form.querySelector("#textfield-date").value);
+    const value = Number(form.querySelector("#textfield-value").value);
+    const description = form.querySelector("#textfield-description").value;
+    const obs = form.querySelector("#textfield-obs").value;
+    const timestamp = new Date();
+    const type_moviment = TYPE_MOVIMENTS.find(item => item.id === moviment);
+    const newMoviment = { id: itemToUpdate.id || (EXTRACT.length || 0) + NUMBASE, moviment, who, date: date.toISOString().split('T')[0], value, description, obs, timestamp, type: type_moviment.type };
 
-        // Exemplo de como acessar diretamente o valor de um campo específico
-        const moviment = Number(form.querySelector("#select-typel").value);
-        const who = Number(form.querySelector("#select-who").value);
-        const date = new Date(form.querySelector("#textfield-date").value);
-        const value = Number(form.querySelector("#textfield-value").value);
-        const description = form.querySelector("#textfield-description").value;
-        const obs = form.querySelector("#textfield-obs").value;
-        const timestamp = new Date()
-        const type_moviment = TYPE_MOVIMENTS.find((item) => item?.id === moviment);
-        const moviments = { id: (EXTRACT?.length || 0) + NUMBASE, moviment, who, date: date.toISOString().split('T')[0], value, description, obs, timestamp, type: type_moviment?.type }
-        console.log(moviments)
+    const index = itemToUpdate.id ? EXTRACT.findIndex(item => item.id === itemToUpdate.id) : -1;
+    index === -1 ? EXTRACT.push(newMoviment) : EXTRACT[index] = newMoviment;
 
-        if (itemToUpdate?.id) {
-            const index = EXTRACT.findIndex((item) => item.id === itemToUpdate?.id)
-            moviments['id'] = itemToUpdate?.id
-            console.log(index)
-            EXTRACT[index] = moviments
-        } else {
-            EXTRACT.push(moviments)
-        }
-        setLocalStorage('moviments', EXTRACT)
-        updateListMoviments()
-        itemToUpdate = {}
-        form.reset()
-    } catch (error) {
-        console.error(error); // Caso ocorra um erro, exibe no console
-    }
+    saveToLocalStorage('moviments', EXTRACT);
+    updateListMoviments();
+    itemToUpdate = {};
+    form.reset();
 }
 
 function clearSearchMoviment() {
-    itemToUpdate = {}
+    itemToUpdate = {};
 }
 
 function populateMovimentForm() {
-    try {
-        const select = document.getElementById('select-typel');
+    const select = document.getElementById('select-typel');
+    TYPE_MOVIMENTS.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        option.textContent = item.name;
+        option.setAttribute('data-description', item.description);
+        select.appendChild(option);
+    });
 
-        TYPE_MOVIMENTS.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.id; // O valor da opção será o ID
-            option.textContent = item.name; // O texto visível será o nome
-            option.setAttribute('data-description', item.description); // Texto de suporte
-            select.appendChild(option);
-        });
+    const selectClient = document.getElementById('select-who');
+    CLIENTS.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        option.textContent = item.name;
+        selectClient.appendChild(option);
+    });
 
-        const selectClient = document.getElementById('select-who');
-
-        CLIENTS.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.id; // O valor da opção será o ID
-            option.textContent = item.name; // O texto visível será o nome
-            selectClient.appendChild(option);
-        });
-
-
-        updateListMoviments()
-    } catch (error) {
-        console.log(error)
-    }
+    updateListMoviments();
 }
 
 function deleteMoviment() {
-    try {
-        if (!itemToUpdate?.id)
-            return
-        if (!confirm('Deseja realmente deletar esse lançamento?'))
-            return
-        if (itemToUpdate?.id) {
-            const index = EXTRACT.findIndex((item) => item.id === itemToUpdate?.id)
-            if (index !== -1) {
-                EXTRACT.splice(index, 1);  // Remove o item no índice encontrado
-            }
-            setLocalStorage('moviments', EXTRACT)
-        }
-        clearSearchMoviment()
-        updateListMoviments()
-        document.getElementById('movimentForm').reset()
-    } catch (error) {
-        console.log(error)
+    if (!itemToUpdate.id) return;
+    if (!confirm('Deseja realmente deletar esse lançamento?')) return;
+    const index = EXTRACT.findIndex(item => item.id === itemToUpdate.id);
+    if (index !== -1) {
+        EXTRACT.splice(index, 1);
+        saveToLocalStorage('moviments', EXTRACT);
     }
+    clearSearchMoviment();
+    updateListMoviments();
+    document.getElementById('movimentForm').reset();
 }
 
 function updateListMoviments() {
-    try {
-        const div = document.getElementById('list-content');
-        const ul = document.createElement('ul');
+    const div = document.getElementById('list-content');
+    const ul = document.createElement('ul');
 
-        EXTRACT?.sort((a, b) => b.date.localeCompare(a.date)).forEach((item) => {
-            const li = document.createElement('li');
+    EXTRACT.sort((a, b) => b.date.localeCompare(a.date)).forEach(item => {
+        const li = document.createElement('li');
+        const h6 = document.createElement('p');
+        h6.innerText = item.description;
+        const p = document.createElement('p');
+        p.innerText = `R$ ${item.value.toFixed(2)}`;
+        const date = document.createElement('p');
+        date.innerText = item.date;
+        const moviment = document.createElement('p');
+        moviment.innerText = returnSearchValue(TYPE_MOVIMENTS, item.moviment).name;
+        const com = document.createElement('p');
+        com.innerText = `Com: ${returnSearchValue(CLIENTS, item.who).name}`;
+        const obs = document.createElement('p');
+        obs.innerText = `Obs: ${item.obs}`;
+        li.style.backgroundColor = item.type ? '#41886570' : '#88414e70';
+        li.appendChild(moviment);
+        li.appendChild(h6);
+        li.appendChild(com);
+        li.appendChild(p);
+        li.appendChild(date);
+        li.appendChild(obs);
+        li.addEventListener('click', () => updateMoviment(item));
+        ul.appendChild(li);
+    });
 
-            // Título com a descrição do movimento
-            const h6 = document.createElement('p');
-            h6.innerText = item.description;
-
-            // Valor da movimentação (corrigido)
-            const p = document.createElement('p');
-            p.innerText = `R$ ${item.value.toFixed(2)}`;  // Corrigido para usar 'item.value' ao invés de 'item.description'
-
-            // Data da movimentação
-            const date = document.createElement('p');
-            date.innerText = `${item.date}`;
-
-            // Tipo de movimentação (se é Receita, Custo, etc.)
-            const moviment = document.createElement('p');
-            moviment.innerText = `${returnSearchValue(TYPE_MOVIMENTS, item.moviment).name}`;
-
-            // Quem fez a movimentação
-            const com = document.createElement('p');
-            com.innerText = `Com: ${returnSearchValue(CLIENTS, item.who).name}`;
-
-            // Observações
-            const obs = document.createElement('p');
-            obs.innerText = `Obs: ${item.obs}`;
-
-            // Definindo a borda com base no tipo de movimentação (verde para Receita, vermelho para Custo)
-            li.style.backgroundColor = `${item.type ? '#41886570' : '#88414e70'}`;
-
-            // Adicionando os elementos ao <li>
-            li.appendChild(moviment);
-            li.appendChild(h6);
-            li.appendChild(com);
-            li.appendChild(p);
-            li.appendChild(date);
-            li.appendChild(obs);
-            li.addEventListener('click', updateMoviment.bind(null, item));
-            // Adicionando o <li> à lista
-            ul.appendChild(li);
-        });
-
-        // Adicionando a lista à div
-        div.innerHTML = '';  // Limpa qualquer conteúdo anterior
-        div.appendChild(ul);
-    } catch (error) {
-        console.log(error);
-    }
+    div.innerHTML = '';
+    div.appendChild(ul);
 }
 
 function updateMoviment(moviment) {
-    try {
-        document.getElementById('select-typel').value = moviment?.moviment
-        document.getElementById('select-who').value = moviment?.who
-        document.getElementById('textfield-value').value = moviment?.value
-        document.getElementById('textfield-date').value = moviment?.date
-        document.getElementById('textfield-description').value = moviment?.description
-        document.getElementById('textfield-obs').value = moviment?.obs
-        itemToUpdate = moviment
-    } catch (error) {
-        console.log(error)
-    }
+    updateElement('select-typel', moviment.moviment);
+    updateElement('select-who', moviment.who);
+    updateElement('textfield-value', moviment.value);
+    updateElement('textfield-date', moviment.date);
+    updateElement('textfield-description', moviment.description);
+    updateElement('textfield-obs', moviment.obs);
+    itemToUpdate = moviment;
 }
 
+// AGENDA
+function registerAgenda(event) {
+    event.preventDefault();
+    let isFinded = false
+    const form = event.target;
+    const date = new Date(form.querySelector("#textfield-date").value);
+    const who = Number(form.querySelector("#select-who").value);
+    const obs = form.querySelector("#textfield-obs").value;
+    const timestamp = new Date();
+    const status = false
+    const agend = { id: itemToUpdateAgenda.id || (AGENDA?.length || 0) + NUMBASE, who, date, obs, timestamp, status };
 
-// CLIENTS
+    if (date < (new Date() - 100000))
+        return alert('Selecione uma data válida.')
+
+    AGENDA?.forEach((item) => {
+        if (item?.date == date)
+            isFinded = true
+    })
+
+    if (isFinded)
+        return alert('Data indisponível. Selecione outra data')
+
+    const index = itemToUpdateAgenda.id ? AGENDA.findIndex(item => item.id === itemToUpdateAgenda.id) : -1;
+    index === -1 ? AGENDA.push(agend) : AGENDA[index] = agend;
+
+    saveToLocalStorage('agenda', AGENDA);
+    updateListAgenda();
+    itemToUpdateAgenda = {};
+    form.reset();
+}
+
+function populateAgendaForm() {
+    const selectClient = document.getElementById('select-who');
+    CLIENTS.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        option.textContent = item.name;
+        selectClient.appendChild(option);
+    });
+
+    updateListAgenda();
+}
+
+function updateListAgenda() {
+    let div = document.getElementById('agenda-content');
+    let ul = document.createElement('ul');
+
+    AGENDA?.sort((a, b) => new Date(a.date) > new Date(b.date)).forEach(item => {
+        if (!item.status) {
+            const li = document.createElement('li');
+            const h6 = document.createElement('p');
+            h6.innerText = `${new Date(item.date).toISOString().split('T')[0]} - ${new Date(item.date).toISOString().split('T')[1].split('.')[0]}`;
+            const p = document.createElement('p');
+            p.innerText = item.date;
+            const moviment = document.createElement('p');
+            moviment.innerText = returnSearchValue(CLIENTS, item.who).name;
+            const obs = document.createElement('p');
+            obs.innerText = `Obs: ${item.obs}`;
+            const button = document.createElement('button');
+            button.innerText = `Realizar`;
+            button.addEventListener('click', () => toggleAgenda(item))
+            const button1 = document.createElement('button');
+            button1.innerText = `Alterar`;
+            button1.addEventListener('click', () => updateAgenda(item))
+            // li.style.backgroundColor = item.type ? '#41886570' : '#88414e70';
+            li.appendChild(h6);
+            li.appendChild(moviment);
+            li.appendChild(obs);
+            li.appendChild(button);
+            li.appendChild(button1);
+            // li.addEventListener('click', () => updateAgenda(item));
+            ul.appendChild(li);
+        }
+    });
+
+    div.innerHTML = '';
+    div.appendChild(ul);
+
+
+    // REalizado
+    div = document.getElementById('ready-content');
+    ul = document.createElement('ul');
+
+    AGENDA?.sort((a, b) => new Date(a.date) > new Date(b.date)).forEach(item => {
+        if (item.status) {
+            const li = document.createElement('li');
+            const h6 = document.createElement('p');
+            h6.innerText = `${new Date(item.date).toISOString().split('T')[0]} - ${new Date(item.date).toISOString().split('T')[1].split('.')[0]}`;
+            const p = document.createElement('p');
+            p.innerText = item.date;
+            const moviment = document.createElement('p');
+            moviment.innerText = returnSearchValue(CLIENTS, item.who).name;
+            const obs = document.createElement('p');
+            obs.innerText = `Obs: ${item.obs}`;
+            const button = document.createElement('button');
+            button.innerText = `Retornar`;
+            button.addEventListener('click', () => toggleAgenda(item))
+            const button1 = document.createElement('button');
+            // li.style.backgroundColor = item.type ? '#41886570' : '#88414e70';
+            li.appendChild(h6);
+            li.appendChild(moviment);
+            li.appendChild(obs);
+            li.appendChild(button);
+            ul.appendChild(li);
+        }
+    });
+
+    div.innerHTML = '';
+    div.appendChild(ul);
+}
+
+function toggleAgenda(itemToUpdateAgenda) {
+    itemToUpdateAgenda['status'] = !itemToUpdateAgenda?.status
+    const index = itemToUpdateAgenda.id ? AGENDA.findIndex(item => item.id === itemToUpdateAgenda.id) : -1;
+    index === -1 ? '' : AGENDA[index] = itemToUpdateAgenda;
+
+    saveToLocalStorage('agenda', AGENDA);
+    updateListAgenda();
+    itemToUpdateAgenda = {};
+}
+
+function updateAgenda(agenda) {
+    updateElement('select-who', agenda.who);
+    updateElement('textfield-date', new Date(agenda.date).toISOString().substring(0, 16));
+    updateElement('textfield-obs', agenda.obs);
+    itemToUpdateAgenda = agenda;
+}
+
+function clearSearchAgenda() {
+    itemToUpdateAgenda = {};
+}
+
+function deleteAgenda() {
+    if (!itemToUpdateAgenda.id) return;
+    if (!confirm('Deseja realmente deletar esse lançamento?')) return;
+    const index = AGENDA.findIndex(item => item.id === itemToUpdateAgenda.id);
+    if (index !== -1) {
+        AGENDA.splice(index, 1);
+        saveToLocalStorage('agenda', AGENDA);
+    }
+    clearSearchAgenda();
+    updateListAgenda();
+    document.getElementById('agendaForm').reset();
+}
+
+// CLIENT
 
 function registerClient(event) {
-    try {
-        event.preventDefault(); // Previne o comportamento padrão de envio do formulário
-        const form = event.target; // Acessa o formulário que disparou o evento
+    event.preventDefault();
+    const form = event.target;
+    const name = form.querySelector("#textfield-name").value;
+    const description = form.querySelector("#textfield-description").value;
+    const newClient = { id: itemToUpdateClient.id || (CLIENTS.length || 0) + 1, name, description };
 
-        // Exemplo de como acessar diretamente o valor de um campo específico
-        const name = form.querySelector("#textfield-name").value;
-        const description = form.querySelector("#textfield-description").value;
-        const clients = { id: (CLIENTS?.length || 1) + 1, name, description }
-        console.log(clients)
+    const index = itemToUpdateClient.id ? CLIENTS.findIndex(item => item.id === itemToUpdateClient.id) : -1;
+    index === -1 ? CLIENTS.push(newClient) : CLIENTS[index] = newClient;
 
-        if (itemToUpdateClient?.id) {
-            const index = CLIENTS.findIndex((item) => item.id === itemToUpdateClient?.id)
-            clients['id'] = itemToUpdateClient?.id
-            console.log(index)
-            CLIENTS[index] = clients
-        } else {
-            CLIENTS.push(clients)
-        }
-        setLocalStorage('clients', CLIENTS)
-        itemToUpdateClient = {}
-        updateListClients()
-        form.reset()
-    } catch (error) {
-        console.error(error); // Caso ocorra um erro, exibe no console
-    }
+    saveToLocalStorage('clients', CLIENTS);
+    updateListClients();
+    itemToUpdateClient = {};
+    form.reset();
 }
 
 function clearSearchClient() {
-    itemToUpdateClient = {}
+    itemToUpdateClient = {};
 }
 
 function deleteClient() {
-    try {
-        if (!itemToUpdateClient?.id || itemToUpdateClient?.id == 0)
-            return
-        if (!confirm('Deseja realmente deletar esse nome?'))
-            return
-        if (itemToUpdateClient?.id) {
-            const index = CLIENTS.findIndex((item) => item.id === itemToUpdateClient?.id)
-            if (index !== -1) {
-                CLIENTS.splice(index, 1);  // Remove o item no índice encontrado
-            }
-            setLocalStorage('clients', CLIENTS)
-        }
-        clearSearchClient()
-        updateListClients()
-        document.getElementById('clientForm').reset()
-    } catch (error) {
-        console.log(error)
+    if (!itemToUpdateClient.id || itemToUpdateClient.id === 0) return;
+    if (!confirm('Deseja realmente deletar esse nome?')) return;
+    const index = CLIENTS.findIndex(item => item.id === itemToUpdateClient.id);
+    if (index !== -1) {
+        CLIENTS.splice(index, 1);
+        saveToLocalStorage('clients', CLIENTS);
     }
+    clearSearchClient();
+    updateListClients();
+    document.getElementById('clientForm').reset();
 }
 
 function updateListClients() {
-    try {
-        const div = document.getElementById('list-content');
-        const ul = document.createElement('ul');
-
-        CLIENTS?.forEach((item) => {
-            const li = document.createElement('li');
-
-            // Título com a descrição do movimento
-            const name = document.createElement('p');
-            name.innerText = item.name;
-
-            // Data da movimentação
-            const description = document.createElement('p');
-            description.innerText = `${item.description}`;
-
-            // Adicionando os elementos ao <li>
-            li.appendChild(name);
-            li.appendChild(description);
-            li.addEventListener('click', updateClient.bind(null, item));
-            // Adicionando o <li> à lista
-            ul.appendChild(li);
-        });
-
-        // Adicionando a lista à div
-        div.innerHTML = '';  // Limpa qualquer conteúdo anterior
-        div.appendChild(ul);
-    } catch (error) {
-        console.log(error);
-    }
+    const div = document.getElementById('list-content');
+    const ul = document.createElement('ul');
+    CLIENTS.forEach(item => {
+        const li = document.createElement('li');
+        const name = document.createElement('p');
+        name.innerText = item.name;
+        const description = document.createElement('p');
+        description.innerText = item.description;
+        li.appendChild(name);
+        li.appendChild(description);
+        li.addEventListener('click', () => updateClient(item));
+        ul.appendChild(li);
+    });
+    div.innerHTML = '';
+    div.appendChild(ul);
 }
 
 function updateClient(client) {
-    try {
-        document.getElementById('textfield-name').value = client?.name
-        document.getElementById('textfield-description').value = client?.description
-        itemToUpdateClient = client
-    } catch (error) {
-        console.log(error)
-    }
+    updateElement('textfield-name', client.name);
+    updateElement('textfield-description', client.description);
+    itemToUpdateClient = client;
 }
 
 function returnSearchValue(array, id) {
-    try {
-        return array.find((item) => item?.id === id);
-    } catch (error) {
-        console.log(error)
-    }
+    return array.find(item => item.id === id);
 }
 
-document.addEventListener('DOMContentLoaded', loadData)
+document.addEventListener('DOMContentLoaded', loadFromLocalStorage);

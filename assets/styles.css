@@ -67,6 +67,7 @@ details{
     text-decoration: none;
     text-transform: uppercase;
     font-weight: bold;
+    font-size: 0.7em;
     color: var(--primary-color);
 }
 
